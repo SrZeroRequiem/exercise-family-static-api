@@ -69,7 +69,6 @@ def handle_delete(member_id):
 @app.route('/members/<int:member_id>', methods=['GET'])
 def handle_getId(member_id):
     member = jackson_family.get_member(member_id)
-    member = member[0]
     if type(member) == type({}):
         response_body = {
             "msg": f"Member {member_id} ",
