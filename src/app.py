@@ -31,12 +31,56 @@ def handle_hello():
     # this is how you can use the Family datastructure by calling its methods
     members = jackson_family.get_all_members()
     response_body = {
-        "hello": "world",
         "family": members
     }
 
 
     return jsonify(response_body), 200
+@app.route('/members', methods=['POST'])
+def handle_add():
+    request_body = request.json
+    members = jackson_family.add_member(request_body)
+    response_body = {}
+    if type(members) == type([]):
+        response_body = {
+        "msg": "Member added",
+        "family": members
+        }
+        return jsonify(response_body),200
+    else:
+        response_body = {
+            "msg" : members
+        }
+        return jsonify(response_body),400
+@app.route('/members/<int:member_id>', methods=['DELETE'])
+def handle_delete(member_id):
+    members = jackson_family.delete_member(member_id)
+    if type(members) == type([]):
+        response_body = {
+            "msg": f"Member {member_id} deleted",
+            "family": members
+        }
+        return jsonify(response_body),200
+    else:
+        response_body = {
+            "msg": members,
+        }
+        return jsonify(response_body),404
+@app.route('/members/<int:member_id>', methods=['GET'])
+def handle_getId(member_id):
+    member = jackson_family.get_member(member_id)
+    member = member[0]
+    if type(member) == type({}):
+        response_body = {
+            "msg": f"Member {member_id} ",
+            "member": member
+        }
+        return jsonify(response_body),200
+    else:
+        response_body = {
+            "msg": member,
+        }
+        return jsonify(response_body),404
 
 # this only runs if `$ python src/app.py` is executed
 if __name__ == '__main__':
